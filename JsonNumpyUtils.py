@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from BashColors import C
 from TarfileFunctions import *
 import glob, json, numpy, os, pprint
+import numpy as np
 from json import JSONEncoder
 from os.path import *
 
@@ -14,10 +15,11 @@ class Parent(object):
         self.contentPath = os.getcwd()
         self.jsonFileSet = {'q'}
         self.jsonFileSet.remove('q')
+        self.listJsonFiles()
         self.jsonFilesPath=join(self.contentPath, 'jsonFiles')
         if not os.path.exists(self.jsonFilesPath):
             os.makedirs(self.jsonFilesPath)
-        self.Checksum_JsonNumpyUtils = self.getCheckSum()
+        self.checksum = self.getCheckSum()
         self.jnu = JsonNumpyUtils
         super(object, self).__init__()
         
@@ -38,14 +40,17 @@ class Parent(object):
             print(date)
         return str(date)
 
-    def listJsonFiles(self, C=C):
+    def listJsonFiles(self, silent=True):
         json_files = glob.glob('*.json', recursive = True)
         if len(json_files) !=  0:
-            print('\nJson files...')
+            if not silent:
+                print('\nJson files...')
             for fil in sorted(json_files):
                 fil = os.path.abspath(fil)
+                fil = str(fil)
                 self.jsonFileSet.add(fil)
-                print(f'{C.BICyan}{fil}{C.ColorOff}')
+                if not silent:
+                    print(f'{C.ColorOff}{fil}{C.ColorOff}')
         else: print(f'{C.BIRed}No JSON files exist.{C.ColorOff}')
             
     def createJsonFile(self, name:str, input_data:any):
@@ -71,13 +76,21 @@ class Parent(object):
         
     def getMethodList(self, silent=True):
         '''List all methods in JsonNumpyUtils.\n Print silent = True'''
-        methodList=[]
-        for item in dir(jnu):
-            if not item.__contains__('__'):
-                methodList.append(item)
-                if not silent:
-                    print(item)
-        return methodList
+        method_list=[]
+        for attribute in dir(jnu):
+            # Get the attribute value
+            attribute_value = getattr(jnu, attribute)
+            # Check that it is callable
+            if callable(attribute_value):
+                # Filter all dunder (__ prefix) methods
+                if attribute.startswith('__') == False:
+                    method_list.append(attribute)
+        
+        if not silent:
+            print(f'{len(method_list)} callable methods in JsonNumpyUtils.py')
+            for method in method_list:
+                print(method)
+        return method_list
 
     def gzipJsonTarFile(self, silent=True):
         '''collects json files and creates a tar.gz file\nsilent=True'''
@@ -140,7 +153,9 @@ class NumpyArrayEncoder(Parent):
         print(f"{C.BIGreen}{'NumpyArrayEncoder'}{C.ColorOff}")
         super(NumpyArrayEncoder, self).__init__()
         
-    def default(self, obj):
+    def encodeNumpy(self, obj):
+        if isinstance(obj, np.str):
+            return str(obj)
         if isinstance(obj, np.integer):
             return int(obj)
         elif isinstance(obj, np.floating):
@@ -174,8 +189,6 @@ class DecodeToNumpy(Parent):
             value = obj['_value_']
             return range(value[0],value[-1])
         return obj
-        
-        
 
 class JsonNumpyUtils(NumpyArrayEncoder, DecodeToNumpy):
     def __init__(self):
@@ -184,5 +197,3 @@ class JsonNumpyUtils(NumpyArrayEncoder, DecodeToNumpy):
         super(JsonNumpyUtils, self).__init__()
         
 jnu=JsonNumpyUtils()
-print(jnu.mro)
-print(jnu.__dict__)
