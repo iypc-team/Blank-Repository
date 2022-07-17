@@ -34,7 +34,8 @@ class AllInstalls4(object):
         print(f"{C.BIGreen}AllInstalls4{C.ColorOff}")
         if pip.__version__ != '22.0.4':
             self.systemCall(["pip3", "install", "pip==22.0.4"])
-        else: print(f"pip: {C.BIPurple}{pip.__version__}{C.ColorOff}")
+        else: pass
+            # print(f"pip: {C.BIPurple}{pip.__version__}{C.ColorOff}")
         self.__all__ = self.getMethodList()
         
         self.contentPath = os.getcwd()
