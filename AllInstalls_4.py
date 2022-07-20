@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 from BashColors import C
-# from TarfileFunctions import *
+from TarfileFunctions import *
 
 from subprocess import check_output, CalledProcessError, STDOUT
 import concurrent.futures, glob, json, pip, os, sys
@@ -56,7 +56,6 @@ class AllInstalls4(object):
             tff.extractTarfile('DataGenerator5.tar.gz')
         if not exists(self.testPath):
             tff.extractTarfile('images.tar.gz')
-            print()
 
         # self.listJsonFiles()
         self.jsonFilesPath = join(self.contentPath, 'jsonFiles')
