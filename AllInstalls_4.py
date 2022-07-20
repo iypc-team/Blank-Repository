@@ -1,7 +1,6 @@
 from __future__ import absolute_import, unicode_literals
-# from IPython.display import clear_output
 from BashColors import C
-from TarfileFunctions import *
+# from TarfileFunctions import *
 
 from subprocess import check_output, CalledProcessError, STDOUT
 import concurrent.futures, glob, json, pip, os, sys
@@ -27,16 +26,16 @@ if not exists(jsonPath):
     with open('initialGlobList.json', 'w', encoding='utf-8') as f:
         json.dump(initialGlobList, f, ensure_ascii=False, indent='\t')
 else:
-    # print('exists')
     pass
 
 class AllInstalls4(object):
     ''' '''
     def __init__(self):
-        print(f"{C.BIGreen}AllInstalls4{C.ColorOff}")
-        if pip.__version__ != '22.0.4':
-            self.systemCall(["pip3", "install", "pip==22.0.4"])
-        else: pass
+        print(f'{C.BIGreen}AllInstalls4{C.ColorOff}')
+        self.systemCall(["pip3", "install", "-q", "-U", "pip"])
+        # if pip.__version__ != '22.0.4':
+            # self.systemCall(["pip3", "install", "pip==22.0.4"])
+        # else: pass
             # print(f"pip: {C.BIPurple}{pip.__version__}{C.ColorOff}")
         self.__all__ = self.getMethodList()
 
@@ -64,7 +63,7 @@ class AllInstalls4(object):
         if not os.path.exists(self.jsonFilesPath):
             os.makedirs(self.jsonFilesPath)
             
-        print(f'{C.BIYellow}Pre install modules{C.ColorOff}')
+        print(f'{C.BIYellow}Pre installing modules{C.ColorOff}')
         start = perf_counter()
         if not self.checkPackageAvailability('tfx', silent=False):
             self.systemCall(["pip3", "install", "-q", "-U", "tfx"])
@@ -72,13 +71,13 @@ class AllInstalls4(object):
             self.silentSystemCall(
                 ["pip3", "install", "-q", "-U", "matplotlib"])
         if not self.checkPackageAvailability('opencv-python-headless', silent=False):
-            self.silentSystemCall(
+            self.systemCall(
                 ["pip3", "install", "-q","-U", "opencv-python-headless"])
         if not self.checkPackageAvailability('numpy', silent=False):
-            self.silentSystemCall(
-            ["pip3", "install", "-q", "-U", "numpy"])
+            self.systemCall(
+                ["pip3", "install", "-q", "-U", "numpy"])
         self.printTime(start)
-        print(f'{C.BIYellow}Pre installs completed…{C.ColorOff}')
+        print(f'{C.BIYellow}Pre installs completed…{C.ColorOff}\n')
         
         self.ai4 = AllInstalls4
         super(object, self).__init__()
@@ -91,7 +90,7 @@ class AllInstalls4(object):
         return "%s(%r)" % (self.__class__, self.__dict__)
 
     def getMethodList(self, silent=True):
-        '''List all methods in AllInstalls4\n Print silent = True'''
+        '''List all methods in AllInstall\n Print silent = True'''
         method_list=[]
         for attribute in dir(self):
             # Get the attribute value
@@ -102,7 +101,7 @@ class AllInstalls4(object):
                 if attribute.startswith('__') == False:
                     method_list.append(attribute)
         if not silent:
-            print(f'{len(method_list)} callable methods in AllInstalls4')
+            print(f'{len(method_list)} callable methods in AllInstall')
             for method in method_list:
                 print(method)
         return method_list
@@ -204,7 +203,7 @@ class AllInstalls4(object):
     def getPip(self):
         '''Should needs to be pip version 22.0.4'''
         print(f'installing: {C.BIPurple}pip{C.ColorOff}')
-        output, success = self.systemCall(["pip3", "install", "-q", "pip==22.0.4"])
+        output, success = self.systemCall(["pip3", "install", "-q", "U", "pip"])
         print(f'completed: {C.BIGreen}pip{C.ColorOff}')
         # return f'completed: {C.BIGreen}pip{C.ColorOff}'
 
