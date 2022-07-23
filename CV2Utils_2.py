@@ -10,7 +10,11 @@ from concurrent.futures import ThreadPoolExecutor
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '5'
 from os.path import *
 from time import perf_counter, sleep
-
+if pip.__version__ <= '22.0.4':
+    print(f'{C.BIPurple}installing pip --update{C.ColorOff}')
+    command = ["pip3", "install", "-q", "-U", "pip"]
+    output = check_output(command, stderr=STDOUT).decode()
+    
 try:
     import numpy
 except ModuleNotFoundError as err:
@@ -60,9 +64,6 @@ class CV2Utils(object):
     ''' '''
     def __init__(self):
         print(f"{C.BIGreen}CV2Utils{C.ColorOff}")
-        if pip.__version__ <= '22.0.4':
-            print(f'{C.BIPurple}installing pip --update{C.ColorOff}')
-            self.systemCall(["pip3", "install", "-q", "-U", "pip"])
             
         self.cvu = CV2Utils
         self.__all__ = self.getMethodList()
