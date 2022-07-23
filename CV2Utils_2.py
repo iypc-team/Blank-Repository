@@ -1,11 +1,11 @@
-# 9/22/2021
-# updated 02/26/2022
+# created: 9/22/2021
+# updated: 07/23/2022
 from __future__ import absolute_import, unicode_literals
 from BashColors import C
 
 from subprocess import check_output, CalledProcessError, STDOUT
 import concurrent.futures, glob, json, pip, os, shutil, sys, tarfile
-import pkg_resources
+# import pkg_resources
 from concurrent.futures import ThreadPoolExecutor
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '5'
 from os.path import *
@@ -27,7 +27,7 @@ try:
     import cv2
 except ModuleNotFoundError as err:
     print(err)
-    command = opencv-python-headless
+    command = ["pip3", "install", "-q", "-U", "opencv-python-headless"]
     output = check_output(command, stderr=STDOUT).decode()
     
 try:
@@ -35,10 +35,11 @@ try:
 except ModuleNotFoundError as err:
     print(err)
     command = ["pip3", "install", "-q", "-U", "tfx"]
-    check_output(command, stderr=STDOUT).decode()
-    
+    output = check_output(command, stderr=STDOUT).decode()
+    print(output)
 import numpy
 import matplotlib
+from matplotlib import pyplot as plt
 import cv2
 import tensorflow
     
